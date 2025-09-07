@@ -1,0 +1,567 @@
+<!DOCTYPE html>
+<html lang="nl">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Fundacja Objazdowych Wydarzeń Integracyjnych</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        darkMode: 'class',
+        theme: {
+          extend: {
+            colors: {
+              primary: '#22d3ee',      // Elegant Cyan
+              secondary: '#38bdf8',   // Professional Blue
+              accent: '#c026d3',       // Vibrant Fuchsia
+              light: '#f0f8ff',        // Alice Blue (soft off-white)
+              dark: '#0a043c',         // Deep Indigo
+              whatsapp: '#25D366',     // WhatsApp Green
+            },
+            fontFamily: {
+              sans: ['Inter', 'sans-serif'],
+            },
+          },
+        },
+      }
+    </script>
+    <link rel="preconnect" href="https://rsms.me/">
+    <link rel="stylesheet" href="https://rsms.me/inter/inter.css">
+    <style>
+        body { 
+            font-family: 'Inter', sans-serif; 
+            transition: background-color 0.5s ease, color 0.5s ease;
+        }
+        .focus-ring {
+            outline: 2px solid transparent;
+            outline-offset: 2px;
+        }
+        .focus-ring:focus-visible {
+            outline-color: #c026d3; /* Accent color */
+        }
+
+        @property --angle {
+          syntax: '<angle>';
+          initial-value: 0deg;
+          inherits: false;
+        }
+
+        @keyframes aurora {
+          to { --angle: 360deg; }
+        }
+        
+        .aurora-border {
+          position: relative;
+          isolation: isolate;
+        }
+        
+        .aurora-border::before {
+          content: '';
+          position: absolute;
+          z-index: -1;
+          inset: -3px;
+          border-radius: inherit;
+          background: conic-gradient(
+            from var(--angle),
+            #22d3ee, /* primary */
+            #38bdf8, /* secondary */
+            #22d3ee  /* loop back to primary */
+          );
+          animation: aurora 4s linear infinite;
+        }
+
+        .aurora-border-green {
+          position: relative;
+          isolation: isolate;
+        }
+        
+        .aurora-border-green::before {
+          content: '';
+          position: absolute;
+          z-index: -1;
+          inset: -3px;
+          border-radius: inherit;
+          background: conic-gradient(
+            from var(--angle),
+            #25D366,
+            #10B981,
+            #25D366
+          );
+          animation: aurora 4s linear infinite;
+        }
+        
+        /* Custom glow shadow utilities */
+        .glow-shadow-primary {
+          box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2), 0 0 20px rgba(34, 211, 238, 0.3);
+        }
+         .glow-shadow-secondary {
+          box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2), 0 0 20px rgba(56, 189, 248, 0.3);
+        }
+        .glow-shadow-accent {
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2), 0 0 20px rgba(192, 38, 211, 0.4);
+        }
+        .glow-shadow-blue {
+          box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2), 0 0 30px rgba(56, 189, 248, 0.4);
+        }
+        .glow-shadow-green {
+          box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2), 0 0 30px rgba(37, 211, 102, 0.5);
+        }
+
+        /* Theme Switcher Styles */
+        .theme-toggle {
+          --size: 2rem;
+          --icon-fill-light: #0a043c;
+          --icon-fill-dark: #f0f8ff;
+          
+          background: none;
+          border: none;
+          padding: 0;
+          inline-size: var(--size);
+          block-size: var(--size);
+          aspect-ratio: 1;
+          border-radius: 50%;
+          cursor: pointer;
+          touch-action: manipulation;
+          -webkit-tap-highlight-color: transparent;
+          outline-offset: 5px;
+        }
+
+        .theme-toggle > svg {
+          inline-size: 100%;
+          block-size: 100%;
+          stroke-linecap: round;
+        }
+        
+        .sun-and-moon {
+          --ease-elastic-3: cubic-bezier(0.5, 1.25, 0.75, 1.25);
+          --ease-elastic-4: cubic-bezier(0.5, 1.5, 0.75, 1.25);
+          --ease-out-5: cubic-bezier(0, 0, 0, 1);
+        }
+
+        :root:not(.dark) .sun-and-moon > .sun,
+        :root:not(.dark) .sun-and-moon > .sun-beams {
+            color: var(--icon-fill-light);
+        }
+        
+        :root.dark .sun-and-moon > .moon,
+        :root.dark .sun-and-moon > .sun {
+            color: var(--icon-fill-dark);
+        }
+
+        .sun-and-moon > :is(.moon, .sun, .sun-beams) {
+          transform-origin: center center;
+        }
+        
+        .sun-and-moon > .sun {
+           transition: transform 0.5s var(--ease-elastic-4);
+        }
+
+        .sun-and-moon > .sun-beams {
+          stroke-width: 2px;
+          transition: transform 0.5s var(--ease-elastic-4);
+        }
+        
+        .sun-and-moon .moon > circle {
+          transition: transform 0.4s var(--ease-out-5);
+        }
+
+        @supports (cx: 1) {
+          .sun-and-moon .moon > circle {
+            transform: translateX(0);
+          }
+           :root.dark .sun-and-moon .moon > circle {
+             transform: translateX(-7px);
+           }
+        }
+        
+        :root.dark .sun-and-moon > .sun {
+          transform: scale(1.75);
+          transition-timing-function: var(--ease-elastic-3);
+          transition-duration: 0.4s;
+        }
+        
+        :root.dark .sun-and-moon > .sun-beams {
+          transform: rotateZ(-90deg);
+          transition-duration: 0.15s;
+        }
+
+        /* Social Icon Animation */
+        .social-icon {
+            opacity: 0;
+            transform: translateY(10px);
+            transition-property: opacity, transform;
+            transition-duration: 0.5s;
+            transition-timing-function: cubic-bezier(0.25, 0.46, 0.45, 0.94);
+        }
+        .icons-visible .social-icon-1 {
+            opacity: 1;
+            transform: translateY(0);
+            transition-delay: 0.1s;
+        }
+        .icons-visible .social-icon-2 {
+            opacity: 1;
+            transform: translateY(0);
+            transition-delay: 0.2s;
+        }
+        .icons-visible .social-icon-3 {
+            opacity: 1;
+            transform: translateY(0);
+            transition-delay: 0.3s;
+        }
+        .icons-visible .social-icon-4 {
+            opacity: 1;
+            transform: translateY(0);
+            transition-delay: 0.4s;
+        }
+
+        /* Event Explorer Styles */
+        .event-explorer-bg {
+            background-color: #020617; /* slate-950 */
+            background-image: radial-gradient(circle at 50% 30%, rgba(34, 211, 238, 0.1), transparent 50%);
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .fade-in-content {
+            animation: fadeIn 0.5s ease-out forwards;
+        }
+
+        @keyframes glow {
+            0%, 100% { box-shadow: 0 0 20px rgba(56, 189, 248, 0.4), 0 0 30px rgba(56, 189, 248, 0.3); }
+            50% { box-shadow: 0 0 30px rgba(56, 189, 248, 0.6), 0 0 45px rgba(56, 189, 248, 0.5); }
+        }
+
+        .event-image-glow {
+            animation: glow 4s infinite ease-in-out;
+        }
+        
+        /* Combined Hero Carousel Styles */
+
+        /* Part 1: Background Fade Carousel */
+        .hero-bg-slide {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            transition: opacity 1.5s ease-in-out;
+            opacity: 0;
+        }
+        .hero-bg-slide.active {
+            opacity: 1;
+        }
+        .hero-bg-slide img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            object-position: center;
+        }
+
+        /* Part 2: 3D Panel Carousel */
+        .hero-3d-panel-container {
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 50%;
+            height: 100%;
+            z-index: 5;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .hero-3d-scene {
+            width: 150px; /* Reduced from 250px */
+            height: 210px; /* Reduced from 350px */
+            perspective: 1000px;
+        }
+
+        .hero-3d-carousel {
+            width: 100%;
+            height: 100%;
+            position: relative;
+            transform-style: preserve-3d;
+            transition: transform 0.8s cubic-bezier(0.77, 0, 0.175, 1);
+        }
+
+        .hero-3d-panel {
+            position: absolute;
+            width: 130px; /* Reduced from 220px */
+            height: 190px; /* Reduced from 320px */
+            left: 10px; /* (150 - 130) / 2 */
+            top: 10px; /* (210 - 190) / 2 */
+            overflow: hidden;
+            border-radius: 1rem; /* 16px */
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            background: rgba(0,0,0,0.5);
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+        
+        .hero-3d-panel:hover {
+            border-color: #22d3ee; /* primary color */
+            transform: var(--transform-original) scale(1.05) !important;
+        }
+        
+        .hero-3d-panel img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        /* Hide 3D panel on smaller screens */
+        @media (max-width: 1023px) {
+            .hero-3d-panel-container {
+                display: none;
+            }
+        }
+
+        /* Part 3: Common Navigation */
+        .hero-carousel-nav {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            z-index: 15;
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            backdrop-filter: blur(5px);
+            border-radius: 50%;
+            width: 48px;
+            height: 48px;
+            cursor: pointer;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            transition: background 0.3s, transform 0.3s;
+        }
+        
+        .hero-carousel-nav:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateY(-50%) scale(1.05);
+        }
+
+        .hero-carousel-nav.prev-btn { left: 3%; }
+        /* Position next button differently on large screens to avoid the 3D panel */
+        .hero-carousel-nav.next-btn { right: 3%; }
+        @media (min-width: 1024px) {
+             .hero-carousel-nav.next-btn { right: 52%; }
+        }
+
+        /* New Gallery Zoom Effect Styles */
+        .gallery-zoom-container {
+            position: fixed;
+            inset: 0;
+            z-index: 1000; /* High z-index to be on top of everything */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 1rem;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease-in-out;
+        }
+
+        .gallery-zoom-container.visible {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .gallery-zoom-backdrop {
+            position: absolute;
+            inset: 0;
+            background-color: rgba(10, 4, 60, 0.7); /* dark color from theme */
+            backdrop-filter: blur(5px);
+            -webkit-backdrop-filter: blur(5px);
+        }
+
+        .gallery-zoom-content {
+            position: relative;
+            transform: scale(0.9);
+            transition: transform 0.4s cubic-bezier(0.25, 1, 0.5, 1);
+        }
+
+        .gallery-zoom-container.visible .gallery-zoom-content {
+            transform: scale(1);
+        }
+
+        .gallery-zoom-content img {
+            max-width: 70vw;
+            max-height: 80vh;
+            object-fit: contain;
+            border-radius: 1rem; /* 16px */
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.7);
+        }
+        
+        /* Animation on scroll */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(2rem);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        .animate-on-scroll {
+            opacity: 0;
+        }
+        .is-visible.animate-on-scroll,
+        .is-visible .animate-on-scroll {
+            animation: fadeInUp 1s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+        }
+
+        .is-visible .animate-delay-1 { animation-delay: 0.1s; }
+        .is-visible .animate-delay-2 { animation-delay: 0.2s; }
+        .is-visible .animate-delay-3 { animation-delay: 0.3s; }
+        .is-visible .animate-delay-4 { animation-delay: 0.4s; }
+
+        
+        /* RSVP Form Modal Styles */
+        .rsvp-modal-overlay {
+            position: fixed;
+            inset: 0;
+            background-color: rgba(10, 4, 60, 0.5); /* dark color from theme */
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            z-index: 900;
+            opacity: 0;
+            transition: opacity 0.3s ease-in-out;
+        }
+        .rsvp-modal-overlay.visible {
+            opacity: 1;
+        }
+        .rsvp-modal-container {
+            position: fixed;
+            inset: 2rem;
+            z-index: 901;
+            display: flex;
+            flex-direction: column;
+            background: white;
+            border-radius: 1.5rem; /* 24px */
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+            overflow: hidden;
+            transform: scale(0.95);
+            opacity: 0;
+            transition: all 0.3s cubic-bezier(0.25, 1, 0.5, 1);
+        }
+        .dark .rsvp-modal-container {
+            background: #0a043c; /* dark color from theme */
+        }
+        .rsvp-modal-overlay.visible .rsvp-modal-container {
+            transform: scale(1);
+            opacity: 1;
+        }
+        @media (max-width: 767px) {
+            .rsvp-modal-container {
+                inset: 0;
+                border-radius: 0;
+            }
+        }
+
+        /* New Benefit Card Styles */
+        .benefit-card {
+            position: relative;
+            isolation: isolate;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .benefit-card::before {
+            content: '';
+            position: absolute;
+            z-index: -1;
+            inset: -2px;
+            border-radius: 1.25rem; /* Match parent's rounded-2xl */
+            background: conic-gradient(
+                from var(--angle),
+                #22d3ee,
+                #c026d3,
+                #38bdf8,
+                #22d3ee
+            );
+            animation: aurora 5s linear infinite;
+            opacity: 0;
+            transition: opacity 0.4s ease;
+        }
+        .benefit-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        }
+        .benefit-card:hover::before {
+            opacity: 1;
+        }
+        .benefit-card-content {
+          width: 100%;
+          height: 100%;
+          background: rgba(255, 255, 255, 0.05);
+          -webkit-backdrop-filter: blur(10px);
+          backdrop-filter: blur(10px);
+          border: 1px solid rgba(255, 255, 255, 0.1);
+          border-radius: 1rem;
+          transition: background 0.4s ease, color 0.4s ease;
+        }
+        .benefit-card-content > *, .benefit-card-content svg {
+            transition: color 0.4s ease, fill 0.4s ease, stroke 0.4s ease;
+        }
+        .dark .benefit-card-content {
+          background: rgba(10, 4, 60, 0.5); /* darker glass on dark theme */
+        }
+         :not(.dark) .benefit-card-content {
+            background: rgba(255, 255, 255, 0.7);
+            -webkit-backdrop-filter: blur(10px);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(0, 0, 0, 0.05);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+         }
+        
+        .benefit-card:hover .benefit-card-content,
+        .benefit-card.highlighted .benefit-card-content {
+            background: linear-gradient(135deg, #22d3ee, #c026d3);
+        }
+
+        .benefit-card:hover .benefit-card-content *,
+        .benefit-card.highlighted .benefit-card-content * {
+            color: white;
+        }
+
+        .benefit-card:hover .benefit-card-content svg,
+        .benefit-card.highlighted .benefit-card-content svg {
+            color: white;
+        }
+        
+        /* Style for highlighted benefit cards, e.g., pricing tables */
+        .benefit-card.highlighted {
+            transform: scale(1.05);
+        }
+        .benefit-card.highlighted:hover {
+            /* Combine hover effects */
+            transform: scale(1.05) translateY(-8px);
+        }
+        .benefit-card.highlighted::before {
+            opacity: 1;
+            animation-duration: 3s; /* Make it a bit faster for highlight */
+        }
+
+
+
+    </style>
+  <script type="importmap">
+{
+  "imports": {
+    "react/": "https://aistudiocdn.com/react@^19.1.1/",
+    "react": "https://aistudiocdn.com/react@^19.1.1",
+    "react-dom/": "https://aistudiocdn.com/react-dom@^19.1.1/",
+    "react-dom": "https://aistudiocdn.com/react-dom@^19.1.1"
+  }
+}
+</script>
+<link rel="stylesheet" href="/index.css">
+</head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/index.tsx"></script>
+  </body>
+</html>
