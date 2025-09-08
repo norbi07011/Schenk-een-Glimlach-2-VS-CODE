@@ -1,4 +1,4 @@
-export type Language = 'pl' | 'nl';
+export type Language = 'pl' | 'nl' | 'en';
 
 // FIX: Add 'volunteering' to the Page type to allow navigation to the volunteering page.
 export type Page = 'home' | 'events' | 'for-municipalities' | 'book-event' | 'for-parents' | 'sponsors' | 'impact' | 'gallery' | 'blog' | 'about-us' | 'contact' | 'policies' | 'volunteering' | 'privacy-policy' | 'cookies-policy' | 'pomoc';

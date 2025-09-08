@@ -13,7 +13,7 @@ interface HeaderProps {
 const LanguageSwitcher: React.FC = () => {
     const { language, setLanguage } = useLanguage();
 
-    const switchLang = (lang: 'pl' | 'nl') => {
+    const switchLang = (lang: 'pl' | 'nl' | 'en') => {
         setLanguage(lang);
     };
 
@@ -36,6 +36,15 @@ const LanguageSwitcher: React.FC = () => {
                 aria-pressed={language === 'nl'}
             >
                 NL
+            </button>
+            <button
+                onClick={() => switchLang('en')}
+                className={`px-3 py-1 text-sm font-semibold rounded-full transition-colors duration-300 focus-ring ${
+                    language === 'en' ? 'bg-white text-dark shadow' : 'text-gray-600 hover:bg-white/50 hover:text-dark dark:text-gray-300 dark:hover:bg-white/80 dark:hover:text-dark'
+                }`}
+                aria-pressed={language === 'en'}
+            >
+                EN
             </button>
         </div>
     );
