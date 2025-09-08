@@ -1,9 +1,8 @@
-import type { Handler } from "@netlify/functions";
 import { Resend } from "resend";
 
 const required = (v?: string) => (v && v.trim().length > 0);
 
-export const handler: Handler = async (event) => {
+export const handler = async (event: any) => {
   if (event.httpMethod !== "POST") {
     return { statusCode: 405, body: "Method Not Allowed" };
   }
