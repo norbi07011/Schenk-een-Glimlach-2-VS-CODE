@@ -285,7 +285,8 @@ const HomePage: React.FC<HomePageProps> = ({ navigate }) => {
 
   return (
     <div className="bg-dark">
-      <Hero navigate={navigate} />
+            <Hero navigate={navigate} />
+            <HomeHeroCTA />
       <Partners />
       <HomeEventsPreview events={mappedEvents} />
       <EventPackage />

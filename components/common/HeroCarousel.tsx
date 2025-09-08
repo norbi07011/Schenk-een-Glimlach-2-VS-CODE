@@ -43,7 +43,7 @@ const HeroCarousel: React.FC<HeroCarouselProps> = ({
   return (
     <>
       {/* Part 1: Full-screen Background Carousel */}
-      <div className="absolute inset-0 z-0">
+  <div className="absolute inset-0 w-full h-full -z-10 pointer-events-none">
         {images.map((image, index) => (
           <div
             key={`bg-${index}`}
