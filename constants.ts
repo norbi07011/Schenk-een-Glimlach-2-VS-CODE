@@ -177,6 +177,8 @@ export const sponsorshipPackages: SponsorshipPackage[] = [
 ];
 
 export const sponsorsLogos: SponsorLogo[] = [
+    { name: 'Party Accessoires Verhuu', logoSrc: '/images/sponsorzy/partyaccessoiresverhuu.jpg', href: '#' },
+    { name: 'The Mind Garden', logoSrc: '/images/sponsorzy/The%20mind%20garden.jpg', href: '#' },
     { name: 'Company A', logoSrc: 'https://logo.clearbit.com/google.com', href: '#' },
     { name: 'Company B', logoSrc: 'https://logo.clearbit.com/microsoft.com', href: '#' },
     { name: 'Company C', logoSrc: 'https://logo.clearbit.com/apple.com', href: '#' },

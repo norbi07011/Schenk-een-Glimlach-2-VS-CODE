@@ -23,17 +23,12 @@ const SponsorsPage: React.FC<SponsorsPageProps> = ({ navigate }) => {
     const { ref: partnersSectionRef, isVisible: partnersVisible } = useAnimateOnScroll({ threshold: 0.1 });
     const { ref: benefitsSectionRef, isVisible: benefitsVisible } = useAnimateOnScroll({ threshold: 0.2 });
 
-    const partners = [
-        { name: "Party Accessoires Verhuur", href: "https://partyaccessoiresverhuur.com/", image: "https://picsum.photos/seed/party/400/600" },
-        { name: "The Mind Garden", href: "https://www.themindgarden.nl/", image: "https://picsum.photos/seed/mindgarden/400/600" },
-        { name: "Jumpfun Ypenburg", href: "https://www.jumpfunypenburg.nl/", image: "https://picsum.photos/seed/jumpfun/400/600" },
-        { name: language === 'pl' ? 'Nasz Partner' : 'Onze Partner', image: "https://picsum.photos/seed/partner1/400/600" },
-        { name: language === 'pl' ? 'Wkrótce...' : 'Binnenkort...', image: "https://picsum.photos/seed/partner2/400/600" },
-        { name: "Partner 6", image: "https://picsum.photos/seed/partner3/400/600" },
-        { name: "Partner 7", image: "https://picsum.photos/seed/partner4/400/600" },
-        { name: "Partner 8", image: "https://picsum.photos/seed/partner5/400/600" },
-    ];
-    
+    // Dynamicznie pobieraj sponsorów z constants.ts
+    const partners = sponsorsLogos.map(s => ({
+        name: s.name,
+        href: s.href,
+        image: s.logoSrc
+    }));
     const partnerImages = partners.map(p => p.image);
 
     const handleDownloadOffer = () => {
