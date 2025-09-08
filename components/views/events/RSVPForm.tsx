@@ -26,6 +26,8 @@ const RSVPForm: React.FC<RSVPFormProps> = ({ event, onClose }) => {
   const [currentStep, setCurrentStep] = useState(1);
   const [formData, setFormData] = useState<RSVPFormData>({ ...initialFormData, eventId: event.id.toString() });
   const [submitted, setSubmitted] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
   const [isVisible, setIsVisible] = useState(false);
 
   useEffect(() => {
@@ -73,8 +75,24 @@ const RSVPForm: React.FC<RSVPFormProps> = ({ event, onClose }) => {
   const handleBack = () => currentStep > 1 && setCurrentStep(s => s - 1);
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    console.log('Form submitted:', formData);
-    setSubmitted(true);
+    setLoading(true);
+    setError(null);
+    fetch('/api/send-mail', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ type: 'rsvp', payload: formData })
+    })
+      .then(async res => {
+        if (!res.ok) {
+          const data = await res.json();
+          throw new Error(data.error || 'Błąd wysyłki');
+        }
+        setSubmitted(true);
+      })
+      .catch(e => {
+        setError(e.message || 'Błąd wysyłki');
+      })
+      .finally(() => setLoading(false));
   };
 
   const stepLabels = [t('rsvpStep1'), t('rsvpStep2'), t('rsvpStep3'), t('rsvpStep4')];
@@ -91,6 +109,12 @@ const RSVPForm: React.FC<RSVPFormProps> = ({ event, onClose }) => {
                 </div>
             </div>
         )
+    }
+    if (loading) {
+      return <div className="text-center p-8 text-primary">Wysyłanie zgłoszenia...</div>;
+    }
+    if (error) {
+      return <div className="text-center p-8 text-red-600">{error}</div>;
     }
     
     switch (currentStep) {

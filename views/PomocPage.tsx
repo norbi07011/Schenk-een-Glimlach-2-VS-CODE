@@ -244,70 +244,85 @@ const DonateCategories: React.FC<{ onSelect: (amount: number, category: Donation
 const QuickDonate = React.forwardRef<HTMLDivElement, { selectedDonation: { amount: number; category: string }, onDonationChange: Function, copyToClipboard: (text: string) => void }>((props, ref) => {
     const { selectedDonation, onDonationChange, copyToClipboard } = props;
     const { t } = useLanguage();
-    
     const [formData, setFormData] = useState({ amount: '', category: '', name: '', email: '' });
-    const [showInstructions, setShowInstructions] = useState(false);
-    const [transferTitle, setTransferTitle] = useState('');
+    const [loading, setLoading] = useState(false);
+    const [error, setError] = useState<string | null>(null);
+    const [success, setSuccess] = useState(false);
 
     useEffect(() => {
         if (selectedDonation.amount > 0 && selectedDonation.category) {
             setFormData(prev => ({ ...prev, amount: selectedDonation.amount.toString(), category: selectedDonation.category }));
         }
     }, [selectedDonation]);
-    
+
     const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
         const { name, value } = e.target;
         setFormData(prev => ({...prev, [name]: value}));
     };
 
     const handleSubmit = (e: React.FormEvent) => {
-        e.preventDefault();
-        const title = `Darowizna - ${formData.category} - ${formData.name || 'Anonim'} - ${formData.amount} EUR`;
-        setTransferTitle(title);
-        setShowInstructions(true);
-        onDonationChange({ amount: 0, category: '' }); // Reset selection
+                e.preventDefault();
+                setLoading(true);
+                setError(null);
+                setSuccess(false);
+                fetch('/api/send-mail', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ type: 'quick-donate', payload: formData })
+                })
+                    .then(async res => {
+                        if (!res.ok) {
+                            const d = await res.json();
+                            throw new Error(d.error || 'Błąd wysyłki');
+                        }
+                        setSuccess(true);
+                        onDonationChange({ amount: 0, category: '' });
+                        setFormData({ amount: '', category: '', name: '', email: '' });
+                    })
+                    .catch(e => {
+                        setError(e.message || 'Błąd wysyłki');
+                    })
+                    .finally(() => setLoading(false));
     };
 
     return (
-        <Section id="quick-donate" ref={ref} className="bg-white dark:bg-zinc-900">
-             <h2 className="text-3xl font-extrabold text-center text-dark dark:text-light mb-8">{t('pomocQuickDonateTitle')}</h2>
-             <div className="max-w-2xl mx-auto p-8 bg-light dark:bg-dark rounded-2xl shadow-inner">
-                <form onSubmit={handleSubmit} className="space-y-4">
-                    {/* TODO: Add payment gateway integration here (Mollie/Stripe) */}
-                    <div>
-                        <label className="block text-sm font-medium mb-1" htmlFor="amount">{t('pomocQuickDonateAmount')}</label>
-                        <input type="number" id="amount" name="amount" value={formData.amount} onChange={handleChange} required placeholder="50" className="w-full p-2 border rounded-lg dark:bg-zinc-800 dark:border-zinc-600 focus-ring" />
-                    </div>
-                    <div>
-                        <label className="block text-sm font-medium mb-1" htmlFor="category">{t('pomocQuickDonateCategory')}</label>
-                        <select id="category" name="category" value={formData.category} onChange={handleChange} required className="w-full p-2 border rounded-lg dark:bg-zinc-800 dark:border-zinc-600 focus-ring">
-                            <option value="" disabled>{t('pomocQuickDonateCategorySelect')}</option>
-                            <option value="dzieci">{t('pomocCatTitleDzieci')}</option>
-                            <option value="mamy">{t('pomocCatTitleMamy')}</option>
-                            <option value="zwierzęta">{t('pomocCatTitleZwierzeta')}</option>
-                        </select>
-                    </div>
-                    <div>
-                         <label className="block text-sm font-medium mb-1" htmlFor="name">{t('pomocQuickDonateName')}</label>
-                        <input type="text" id="name" name="name" value={formData.name} onChange={handleChange} required className="w-full p-2 border rounded-lg dark:bg-zinc-800 dark:border-zinc-600 focus-ring" />
-                    </div>
-                    <div>
-                         <label className="block text-sm font-medium mb-1" htmlFor="email">{t('pomocQuickDonateEmail')}</label>
-                        <input type="email" id="email" name="email" value={formData.email} onChange={handleChange} className="w-full p-2 border rounded-lg dark:bg-zinc-800 dark:border-zinc-600 focus-ring" />
-                    </div>
-                    <Button type="submit" variant="accent" className="w-full">{t('pomocQuickDonateSubmit')}</Button>
-                </form>
-                {showInstructions && (
-                    <div className="mt-6 rounded-2xl border p-4 bg-slate-50 dark:bg-zinc-900/50 dark:border-zinc-700 text-dark dark:text-light">
-                        <h4 className="font-semibold mb-2 text-lg">{t('pomocQuickDonateInstructionsTitle')}</h4>
-                        <p><strong>{t('pomocQuickDonateIBAN')}:</strong> NL64INGB0006405427 <button onClick={()=>copyToClipboard('NL64INGB0006405427')} className="ml-2 text-cyan-600 dark:text-cyan-400 underline text-sm">{t('pomocQuickDonateCopy')}</button></p>
-                        <p><strong>{t('pomocQuickDonateBIC')}:</strong> INGBNL2A</p>
-                        <p className="mt-2"><strong>{t('pomocQuickDonateTransferTitle')}:</strong><br/><span className="break-all">{transferTitle}</span> <button onClick={()=>copyToClipboard(transferTitle)} className="ml-2 text-cyan-600 dark:text-cyan-400 underline text-sm">{t('pomocQuickDonateCopy')}</button></p>
-                        <p className="mt-3 text-sm text-slate-600 dark:text-slate-400">{t('pomocQuickDonateEmailConfirm', 'info@segim.ach.nl')}</p>
-                    </div>
-                )}
-             </div>
-        </Section>
+                <Section id="quick-donate" ref={ref} className="bg-white dark:bg-zinc-900">
+                        <h2 className="text-3xl font-extrabold text-center text-dark dark:text-light mb-8">{t('pomocQuickDonateTitle')}</h2>
+                        <div className="max-w-2xl mx-auto p-8 bg-light dark:bg-dark rounded-2xl shadow-inner">
+                                {success ? (
+                                    <div className="text-center text-green-600 p-8">Dziękujemy za darowiznę! 🎉</div>
+                                ) : loading ? (
+                                    <div className="text-center text-primary p-8">Wysyłanie zgłoszenia...</div>
+                                ) : error ? (
+                                    <div className="text-center text-red-600 p-8">{error}</div>
+                                ) : (
+                                    <form onSubmit={handleSubmit} className="space-y-4">
+                                            <div>
+                                                    <label className="block text-sm font-medium mb-1" htmlFor="amount">{t('pomocQuickDonateAmount')}</label>
+                                                    <input type="number" id="amount" name="amount" value={formData.amount} onChange={handleChange} required placeholder="50" className="w-full p-2 border rounded-lg dark:bg-zinc-800 dark:border-zinc-600 focus-ring" />
+                                            </div>
+                                            <div>
+                                                    <label className="block text-sm font-medium mb-1" htmlFor="category">{t('pomocQuickDonateCategory')}</label>
+                                                    <select id="category" name="category" value={formData.category} onChange={handleChange} required className="w-full p-2 border rounded-lg dark:bg-zinc-800 dark:border-zinc-600 focus-ring">
+                                                            <option value="" disabled>{t('pomocQuickDonateCategorySelect')}</option>
+                                                            <option value="dzieci">{t('pomocCatTitleDzieci')}</option>
+                                                            <option value="mamy">{t('pomocCatTitleMamy')}</option>
+                                                            <option value="zwierzęta">{t('pomocCatTitleZwierzeta')}</option>
+                                                    </select>
+                                            </div>
+                                            <div>
+                                                    <label className="block text-sm font-medium mb-1" htmlFor="name">{t('pomocQuickDonateName')}</label>
+                                                    <input type="text" id="name" name="name" value={formData.name} onChange={handleChange} required className="w-full p-2 border rounded-lg dark:bg-zinc-800 dark:border-zinc-600 focus-ring" />
+                                            </div>
+                                            <div>
+                                                    <label className="block text-sm font-medium mb-1" htmlFor="email">{t('pomocQuickDonateEmail')}</label>
+                                                    <input type="email" id="email" name="email" value={formData.email} onChange={handleChange} className="w-full p-2 border rounded-lg dark:bg-zinc-800 dark:border-zinc-600 focus-ring" />
+                                            </div>
+                                            <Button type="submit" variant="accent" className="w-full" disabled={loading}>{t('pomocQuickDonateSubmit')}</Button>
+                                    </form>
+                                )}
+                        </div>
+                </Section>
     );
 });
 QuickDonate.displayName = 'QuickDonate';

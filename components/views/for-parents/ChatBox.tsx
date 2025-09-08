@@ -11,19 +11,35 @@ interface Message {
 
 const ChatBox: React.FC = () => {
     const { t } = useLanguage();
-    const [messages, setMessages] = useState<Message[]>([
+    const defaultMessages: Message[] = [
         { id: 1, user: 'Rodzic A', text: 'Cześć wszystkim! Czy ktoś był na wydarzeniu w Hadze? Jak wrażenia?', timestamp: '10:30', isOwn: false },
         { id: 2, user: 'Rodzic B', text: 'Byliśmy! Nasz syn był zachwycony dmuchańcami. Organizacja super.', timestamp: '10:32', isOwn: false },
-    ]);
+    ];
+    const [messages, setMessages] = useState<Message[]>(defaultMessages);
     const [newMessage, setNewMessage] = useState('');
     const messagesEndRef = useRef<null | HTMLDivElement>(null);
 
-    const scrollToBottom = () => {
-      messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
-    }
+    // 1. Wczytaj wiadomości z localStorage przy pierwszym renderze
+    useEffect(() => {
+        const stored = localStorage.getItem('chatMessages');
+        if (stored) {
+            try {
+                setMessages(JSON.parse(stored));
+            } catch {}
+        }
+    }, []);
 
-    useEffect(scrollToBottom, [messages]);
+    // 2. Zapisuj wiadomości do localStorage przy każdej zmianie
+    useEffect(() => {
+        localStorage.setItem('chatMessages', JSON.stringify(messages));
+    }, [messages]);
 
+    // Scroll do dołu po każdej zmianie wiadomości
+    useEffect(() => {
+        messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+    }, [messages]);
+
+    // 3. Symulacja odpowiedzi od innego rodzica
     const handleSendMessage = (e: React.FormEvent) => {
         e.preventDefault();
         if (newMessage.trim() === '') return;
@@ -37,6 +53,17 @@ const ChatBox: React.FC = () => {
         };
         setMessages(prev => [...prev, message]);
         setNewMessage('');
+
+        setTimeout(() => {
+            const reply: Message = {
+                id: Date.now() + 1,
+                user: 'Rodzic C',
+                text: 'Dzięki za wiadomość! My też byliśmy i było super 😊',
+                timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+                isOwn: false
+            };
+            setMessages(prev => [...prev, reply]);
+        }, 2500);
     };
 
     return (

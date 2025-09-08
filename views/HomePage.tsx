@@ -18,21 +18,21 @@ interface HomePageProps {
 }
 
 const Hero: React.FC<{ navigate: (page: Page) => void }> = ({ navigate }) => {
-  const { t } = useLanguage();
-  const heroImages = [
-    "https://images.pexels.com/photos/8197627/pexels-photo-8197627.jpeg",
-    "https://images.pexels.com/photos/16082613/pexels-photo-16082613/free-photo-of-a-group-of-children-playing-with-a-colorful-parachute.jpeg",
-    "https://images.pexels.com/photos/8939988/pexels-photo-8939988.jpeg",
-    "https://images.pexels.com/photos/7166613/pexels-photo-7166613.jpeg",
-    "https://images.pexels.com/photos/8477298/pexels-photo-8477298.jpeg",
-    "https://images.pexels.com/photos/7788647/pexels-photo-7788647.jpeg",
-    "https://images.pexels.com/photos/8434771/pexels-photo-8434771.jpeg",
-    "https://images.pexels.com/photos/5792327/pexels-photo-5792327.jpeg",
-    "https://images.pexels.com/photos/8613089/pexels-photo-8613089.jpeg",
-    "https://images.pexels.com/photos/7648323/pexels-photo-7648323.jpeg",
-    "https://images.pexels.com/photos/6647037/pexels-photo-6647037.jpeg",
-    "https://images.pexels.com/photos/8088195/pexels-photo-8088195.jpeg"
-  ];
+    const { t } = useLanguage();
+    const heroImages = [
+        "/images/Zrzut%20ekranu%202025-09-07%20011033.png",
+        "/images/Zrzut%20ekranu%202025-09-07%20011047.png",
+        "/images/Zrzut%20ekranu%202025-09-07%20011102.png",
+        "/images/Zrzut%20ekranu%202025-09-07%20011112.png",
+        "/images/Zrzut%20ekranu%202025-09-07%20011125.png",
+        "/images/Zrzut%20ekranu%202025-09-07%20011149.png",
+        "/images/Zrzut%20ekranu%202025-09-07%20011219.png",
+        "/images/Zrzut%20ekranu%202025-09-07%20011245.png",
+        "/images/Zrzut%20ekranu%202025-09-07%20011919.png",
+        "/images/Zrzut%20ekranu%202025-09-07%20011931.png",
+        "/images/Zrzut%20ekranu%202025-09-07%20012025.png",
+        "/images/Zrzut%20ekranu%202025-09-07%20012101.png"
+    ];
 
   return (
     <section className="relative h-[90vh] min-h-[700px] w-full bg-dark text-white overflow-hidden">

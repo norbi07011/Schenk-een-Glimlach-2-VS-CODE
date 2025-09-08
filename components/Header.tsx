@@ -49,22 +49,8 @@ const Header: React.FC<HeaderProps> = ({ currentPage, navigate }) => {
         <header className="fixed top-0 left-0 right-0 z-50 p-4">
             <div className="container mx-auto bg-light/80 backdrop-blur-lg rounded-full border border-dark/10 shadow-lg shadow-black/5 dark:bg-dark/80 dark:border-light/10">
                 <div className="flex items-center justify-between h-16 px-4 sm:px-6">
-                    {/* Logo */}
-                    <div 
-                        className="flex-shrink-0 cursor-pointer"
-                        onClick={() => navigate('home')}
-                        onKeyPress={(e) => e.key === 'Enter' && navigate('home')}
-                        tabIndex={0}
-                        role="button"
-                        aria-label="Strona główna"
-                    >
-                        <div className="text-xl font-bold text-dark dark:text-light">
-                            Schenk een<span className="text-primary"> Glimlach</span>
-                        </div>
-                    </div>
-
-                    {/* Desktop Navigation */}
-                    <nav className="hidden lg:flex lg:space-x-1">
+                    {/* Logo + Desktop Navigation */}
+                    <nav className="flex items-center space-x-2">
                         {pages.map((page) => (
                             <button
                                 key={page.id}
@@ -77,20 +63,17 @@ const Header: React.FC<HeaderProps> = ({ currentPage, navigate }) => {
                             </button>
                         ))}
                     </nav>
-
-                    {/* Desktop CTA and Lang Switcher */}
                     <div className="hidden lg:flex items-center space-x-4">
                         <ThemeSwitcher />
                         <LanguageSwitcher />
-                         <Button onClick={() => navigate('book-event')} variant="accent" className="!py-2 !px-4 !text-sm">
+                        <Button onClick={() => navigate('book-event')} variant="accent" className="!py-2 !px-4 !text-sm">
                             {t('navBookEvent')}
                         </Button>
                     </div>
-
                     {/* Mobile Menu Button */}
                     <div className="lg:hidden flex items-center space-x-2">
-                         <ThemeSwitcher />
-                         <button onClick={() => setMenuOpen(!isMenuOpen)} className="p-2 rounded-full text-dark/70 hover:text-dark hover:bg-dark/5 dark:text-light/70 dark:hover:text-light dark:hover:bg-light/5 focus-ring" aria-label="Open menu">
+                        <ThemeSwitcher />
+                        <button onClick={() => setMenuOpen(!isMenuOpen)} className="p-2 rounded-full text-dark/70 hover:text-dark hover:bg-dark/5 dark:text-light/70 dark:hover:text-light dark:hover:bg-light/5 focus-ring" aria-label="Open menu">
                             <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 6h16M4 12h16M4 18h16"></path></svg>
                         </button>
                     </div>

@@ -18,6 +18,8 @@ const SponsorsPage: React.FC<SponsorsPageProps> = ({ navigate }) => {
     const { t, language } = useLanguage();
     const formRef = useRef<HTMLElement>(null);
     const [submitted, setSubmitted] = useState(false);
+    const [loading, setLoading] = useState(false);
+    const [error, setError] = useState<string | null>(null);
     const { ref: partnersSectionRef, isVisible: partnersVisible } = useAnimateOnScroll({ threshold: 0.1 });
     const { ref: benefitsSectionRef, isVisible: benefitsVisible } = useAnimateOnScroll({ threshold: 0.2 });
 
@@ -52,8 +54,27 @@ const SponsorsPage: React.FC<SponsorsPageProps> = ({ navigate }) => {
     };
 
     const handleSubmit = (e: React.FormEvent) => {
-        e.preventDefault();
-        setSubmitted(true);
+                e.preventDefault();
+                setLoading(true);
+                setError(null);
+                const form = e.target as HTMLFormElement;
+                const data = Object.fromEntries(new FormData(form).entries());
+                fetch('/api/send-mail', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ type: 'sponsor', payload: data })
+                })
+                    .then(async res => {
+                        if (!res.ok) {
+                            const d = await res.json();
+                            throw new Error(d.error || 'Błąd wysyłki');
+                        }
+                        setSubmitted(true);
+                    })
+                    .catch(e => {
+                        setError(e.message || 'Błąd wysyłki');
+                    })
+                    .finally(() => setLoading(false));
     };
 
     const benefits = [
@@ -200,6 +221,10 @@ const SponsorsPage: React.FC<SponsorsPageProps> = ({ navigate }) => {
                             <h2 className="text-3xl font-bold text-primary mb-2">{t('sponsorsFormSuccessTitle')}</h2>
                             <p className="text-light/80">{t('sponsorsFormSuccessMessage')}</p>
                         </Card>
+                     ) : loading ? (
+                        <Card className="text-center text-primary p-8">Wysyłanie zgłoszenia...</Card>
+                     ) : error ? (
+                        <Card className="text-center text-red-600 p-8">{error}</Card>
                      ) : (
                         <Card>
                             <form onSubmit={handleSubmit} className="space-y-6">
@@ -208,27 +233,27 @@ const SponsorsPage: React.FC<SponsorsPageProps> = ({ navigate }) => {
                                     <input placeholder={t('sponsorsFormContactPerson')} required className="w-full px-3 py-2 border border-gray-600 bg-dark/50 text-light rounded-md shadow-sm focus:ring-primary focus:border-primary focus-ring" />
                                 </div>
                                 <div className="grid md:grid-cols-2 gap-6">
-                                    <input type="email" placeholder={t('sponsorsFormEmail')} required className="w-full px-3 py-2 border border-gray-600 bg-dark/50 text-light rounded-md shadow-sm focus:ring-primary focus:border-primary focus-ring" />
-                                    <input type="tel" placeholder={t('sponsorsFormPhone')} required className="w-full px-3 py-2 border border-gray-600 bg-dark/50 text-light rounded-md shadow-sm focus:ring-primary focus:border-primary focus-ring" />
+                                    <input type="email" name="email" placeholder={t('sponsorsFormEmail')} required className="w-full px-3 py-2 border border-gray-600 bg-dark/50 text-light rounded-md shadow-sm focus:ring-primary focus:border-primary focus-ring" />
+                                    <input type="tel" name="phone" placeholder={t('sponsorsFormPhone')} required className="w-full px-3 py-2 border border-gray-600 bg-dark/50 text-light rounded-md shadow-sm focus:ring-primary focus:border-primary focus-ring" />
                                 </div>
                                 <div>
-                                    <select required className="w-full px-3 py-2 border border-gray-600 bg-dark/50 text-light rounded-md shadow-sm focus:ring-primary focus:border-primary focus-ring">
+                                    <select name="package" required className="w-full px-3 py-2 border border-gray-600 bg-dark/50 text-light rounded-md shadow-sm focus:ring-primary focus:border-primary focus-ring">
                                         <option value="">{t('sponsorsFormPackage')}</option>
                                         {sponsorshipPackages.map(p => <option key={p.id} value={p.id}>{t(p.titleKey as any)}</option>)}
                                         <option value="other">{t('sponsorsFormPackageOptionOther')}</option>
                                     </select>
                                 </div>
                                 <div>
-                                    <textarea placeholder={t('sponsorsFormIdea')} rows={4} className="w-full px-3 py-2 border border-gray-600 bg-dark/50 text-light rounded-md shadow-sm focus:ring-primary focus:border-primary focus-ring" />
+                                    <textarea name="idea" placeholder={t('sponsorsFormIdea')} rows={4} className="w-full px-3 py-2 border border-gray-600 bg-dark/50 text-light rounded-md shadow-sm focus:ring-primary focus:border-primary focus-ring" />
                                 </div>
                                 <div className="pt-2">
                                     <label className="flex items-center">
-                                        <input type="checkbox" className="h-5 w-5 rounded border-gray-300 text-primary focus:ring-secondary focus-ring" />
+                                        <input type="checkbox" name="invoice" className="h-5 w-5 rounded border-gray-300 text-primary focus:ring-secondary focus-ring" />
                                         <span className="ml-2 text-sm text-light/80">{t('sponsorsFormInvoice')}</span>
                                     </label>
                                 </div>
                                 <div className="text-center pt-4">
-                                    <Button type="submit" variant="accent" className="w-full md:w-auto">{t('sponsorsFormSubmit')}</Button>
+                                    <Button type="submit" variant="accent" className="w-full md:w-auto" disabled={loading}>{t('sponsorsFormSubmit')}</Button>
                                 </div>
                             </form>
                         </Card>

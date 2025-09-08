@@ -133,9 +133,28 @@ const VolunteerForm: React.FC<VolunteerFormProps> = ({ type, onSubmit }) => {
 const VolunteeringPage: React.FC = () => {
     const { t } = useLanguage();
     const [isSubmitted, setIsSubmitted] = useState(false);
+    const [loading, setLoading] = useState(false);
+    const [error, setError] = useState<string | null>(null);
 
     const handleFormSubmit = (formData: FormData) => {
-        setIsSubmitted(true);
+                setLoading(true);
+                setError(null);
+                fetch('/api/send-mail', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ type: 'volunteer', payload: formData })
+                })
+                    .then(async res => {
+                        if (!res.ok) {
+                            const d = await res.json();
+                            throw new Error(d.error || 'Błąd wysyłki');
+                        }
+                        setIsSubmitted(true);
+                    })
+                    .catch(e => {
+                        setError(e.message || 'Błąd wysyłki');
+                    })
+                    .finally(() => setLoading(false));
     };
 
     if (isSubmitted) {
@@ -146,6 +165,18 @@ const VolunteeringPage: React.FC = () => {
                     <h2 className="text-3xl font-bold text-primary mb-2">{t('volunteerFormSuccessTitle')}</h2>
                     <p className="text-lg text-gray-700 dark:text-gray-300">{t('volunteerFormSuccessMessage')}</p>
                 </div>
+            </Section>
+        );
+    } else if (loading) {
+        return (
+            <Section>
+                <div className="text-center text-primary p-16">Wysyłanie zgłoszenia...</div>
+            </Section>
+        );
+    } else if (error) {
+        return (
+            <Section>
+                <div className="text-center text-red-600 p-16">{error}</div>
             </Section>
         );
     }
