@@ -1,5 +1,3 @@
-
-
 import React, { useState, useCallback, useEffect } from 'react';
 import { LanguageProvider, useLanguage } from './contexts/LanguageContext';
 import { ThemeProvider } from './contexts/ThemeContext';
@@ -21,6 +19,7 @@ import GalleryPage from './views/GalleryPage';
 import VolunteeringPage from './views/VolunteeringPage';
 import PrivacyPolicyPage from './views/PrivacyPolicyPage';
 import CookiesPolicyPage from './views/CookiesPolicyPage';
+import { routes } from '@/routes';
 
 const usePageMetadata = (page: Page) => {
   const { language } = useLanguage();
@@ -89,12 +88,40 @@ const PageRenderer: React.FC<{ currentPage: Page; navigate: (page: Page) => void
 };
 
 
+// Map pathname to Page type
+const getPageFromPath = (path: string): Page => {
+  switch (path) {
+    case '/': return 'home';
+    case '/events': return 'events';
+    case '/pomoc': return 'pomoc';
+    case '/for-municipalities': return 'for-municipalities';
+    case '/book-event': return 'book-event';
+    case '/for-parents': return 'for-parents';
+    case '/sponsors': return 'sponsors';
+    case '/impact': return 'impact';
+    case '/gallery': return 'gallery';
+    case '/about-us': return 'about-us';
+    case '/contact': return 'contact';
+    case '/volunteering': return 'volunteering';
+    case '/privacy-policy': return 'privacy-policy';
+    case '/cookies-policy': return 'cookies-policy';
+    default: return 'home';
+  }
+};
+
 const App: React.FC = () => {
-  const [currentPage, setCurrentPage] = useState<Page>(pages[0].id);
+  const [currentPage, setCurrentPage] = useState<Page>(getPageFromPath(window.location.pathname));
 
   const navigate = useCallback((page: Page) => {
     setCurrentPage(page);
+    window.history.pushState({}, '', routes[page]);
     window.scrollTo(0, 0);
+  }, []);
+
+  useEffect(() => {
+    const onPopState = () => setCurrentPage(getPageFromPath(window.location.pathname));
+    window.addEventListener('popstate', onPopState);
+    return () => window.removeEventListener('popstate', onPopState);
   }, []);
 
   return (
