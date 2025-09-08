@@ -1,43 +1,43 @@
-import React, { useState, useRef } from 'react';
-import { useLanguage } from '../contexts/LanguageContext';
-import Section from '../components/common/Section';
+import { Link } from "react-router-dom";
+import { routes } from "@/routes";
 
-const SponsorsPage: React.FC = () => {
-    const { t } = useLanguage();
-    const faqItems = [
-        { title: t('sponsorsFaqQ1'), content: t('sponsorsFaqA1') },
-        { title: t('sponsorsFaqQ2'), content: t('sponsorsFaqA2') },
-        { title: t('sponsorsFaqQ3'), content: t('sponsorsFaqA3') },
-    ];
-
+export default function SponsorsPage() {
     return (
-        <Section className="py-16 md:py-24">
-            <h2 className="text-3xl md:text-4xl font-bold text-center mb-8">{t('sponsorsFaqTitle')}</h2>
-            <div className="max-w-3xl mx-auto">
-                <ul>
-                    {faqItems.map((item, idx) => (
-                        <li key={idx} className="mb-6">
-                            <h3 className="text-xl font-semibold mb-2">{item.title}</h3>
-                            <p className="text-gray-700">{item.content}</p>
-                        </li>
-                    ))}
-                </ul>
-            </div>
-        </Section>
-                                    <input type="email" name="email" placeholder={t('sponsorsFormEmail')} required className="w-full px-3 py-2 border border-gray-600 bg-dark/50 text-light rounded-md shadow-sm focus:ring-primary focus:border-primary focus-ring" />
-                                    <input type="tel" name="phone" placeholder={t('sponsorsFormPhone')} required className="w-full px-3 py-2 border border-gray-600 bg-dark/50 text-light rounded-md shadow-sm focus:ring-primary focus:border-primary focus-ring" />
-                                </div>
-                            </form>
-                        </Card>
-                     )}
+        <main className="max-w-6xl mx-auto px-6 py-12">
+            <header className="mb-8">
+                <h1 className="text-4xl font-extrabold">Sponsorzy</h1>
+                <p className="mt-2 text-slate-600">
+                    Dziękujemy partnerom za wsparcie. Dołącz i pomóż nam tworzyć dostępne wydarzenia.
+                </p>
+            </header>
+
+            <section className="grid gap-6 md:grid-cols-3">
+                <div className="rounded-2xl bg-white/70 p-6 shadow">
+                    <h3 className="font-semibold">Pakiet Brąz</h3>
+                    <p className="text-sm text-slate-600">Logo na stronie i w materiałach.</p>
                 </div>
-            </Section>
-            
-            {/* Donations Section */}
-            <Section>
-                <div className="max-w-3xl mx-auto text-center bg-white dark:bg-dark p-8 rounded-2xl shadow-lg">
-                    <h2 className="text-3xl font-extrabold text-dark dark:text-light mb-4">{t('sponsorsDonationTitle')}</h2>
-                    <p className="text-gray-600 dark:text-gray-300 mb-6">{t('sponsorsDonationDesc')}</p>
+                <div className="rounded-2xl bg-white/70 p-6 shadow">
+                    <h3 className="font-semibold">Pakiet Srebro</h3>
+                    <p className="text-sm text-slate-600">Logo + wzmianka w social media.</p>
+                </div>
+                <div className="rounded-2xl bg-white/70 p-6 shadow">
+                    <h3 className="font-semibold">Pakiet Złoto</h3>
+                    <p className="text-sm text-slate-600">Widoczność na wydarzeniach.</p>
+                </div>
+            </section>
+
+            <section className="mt-12">
+                <div className="rounded-2xl bg-cyan-50 p-6">
+                    <h2 className="text-2xl font-bold mb-2">Zostań Sponsorem</h2>
+                    <p className="mb-4">Napisz do nas – przygotujemy propozycję współpracy.</p>
+                    <Link to={routes.contact} className="inline-block rounded-xl bg-cyan-600 px-5 py-3 font-semibold text-white hover:bg-cyan-700">
+                        Kontakt
+                    </Link>
+                </div>
+            </section>
+        </main>
+    );
+}
                     <div className="flex justify-center gap-4">
                         <Button variant="primary" onClick={() => alert('Redirect to payment gateway for 25€')}>25 €</Button>
                         <Button variant="primary" onClick={() => alert('Redirect to payment gateway for 50€')}>50 €</Button>
