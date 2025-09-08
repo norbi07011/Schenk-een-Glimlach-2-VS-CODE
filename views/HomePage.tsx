@@ -12,6 +12,7 @@ import ThreeDCarousel from '../components/common/ThreeDCarousel';
 import { useAnimateOnScroll } from '../hooks/useAnimateOnScroll';
 import HomeEventsPreview, { EventItem } from '../components/home/HomeEventsPreview';
 import GlassCard from '../components/common/GlassCard';
+import { HomeHeroCTA } from '../components/HomeHeroCTA';
 
 interface HomePageProps {
   navigate: (page: Page) => void;

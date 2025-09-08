@@ -11,6 +11,7 @@
     "dev:all": "npm run server & npm run dev"
   },
   "dependencies": {
+    "@netlify/functions": "^4.2.5",
     "@react-email/render": "^1.2.2",
     "react": "^19.1.1",
     "react-dom": "^19.1.1",

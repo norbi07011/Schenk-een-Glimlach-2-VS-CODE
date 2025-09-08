@@ -15,8 +15,8 @@ const ImageTrack: React.FC<ImageTrackProps> = ({ items }) => {
   const dragHappened = useRef(false);
 
   useEffect(() => {
-    const track = trackRef.current;
-    if (!track) return;
+  const track = trackRef.current as HTMLDivElement | null;
+  if (!track) return;
     
     track.dataset.percentage = "0";
     track.dataset.prevPercentage = "0";
@@ -54,13 +54,13 @@ const ImageTrack: React.FC<ImageTrackProps> = ({ items }) => {
 
       track.dataset.percentage = nextPercentage.toString();
       
-      track.animate({
+      (track as HTMLDivElement).animate({
         transform: `translate(${nextPercentage}%, -50%)`
       }, { duration: 1200, fill: 'forwards', easing: 'ease-out' });
       
       const images = Array.from(track.querySelectorAll<HTMLImageElement>(".track-image"));
       for (const image of images) {
-        image.animate({
+        (image as HTMLImageElement).animate({
           objectPosition: `${100 + nextPercentage}% center`
         }, { duration: 1200, fill: "forwards", easing: 'ease-out' });
       }
