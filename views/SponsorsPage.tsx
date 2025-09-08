@@ -38,14 +38,3 @@ export default function SponsorsPage() {
         </main>
     );
 }
-                    <div className="flex justify-center gap-4">
-                        <Button variant="primary" onClick={() => alert('Redirect to payment gateway for 25€')}>25 €</Button>
-                        <Button variant="primary" onClick={() => alert('Redirect to payment gateway for 50€')}>50 €</Button>
-                        <Button variant="primary" onClick={() => alert('Redirect to payment gateway for 100€')}>100 €</Button>
-                    </div>
-                </div>
-            </Section>
-    );
-};
-
-export default SponsorsPage;
